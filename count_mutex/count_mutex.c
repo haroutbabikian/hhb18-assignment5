@@ -65,13 +65,12 @@ void *count1s_thread_mutex(void *arg) {
     pthread_exit(NULL);
 }
 
-void run_tests_mutex(int threads) {
+void run_tests_mutex(int num_threads, FILE *csv_file) {
     int correct_counts = 0;
 
     for (int test = 1; test <= NUM_TESTS; test++) {
         generate_random_array();
 
-        num_threads = threads;
         count = 0;
         pthread_t threads[num_threads];
         clock_t start, end;
@@ -97,8 +96,8 @@ void run_tests_mutex(int threads) {
         }
 
         // Print data for each test
-        printf("Test: %d, Threads: %d, Time: %f seconds, Count: %d (Verified: %d)\n",
-               test, num_threads, ((double)(end - start)) / CLOCKS_PER_SEC, count, verified_count);
+        fprintf(csv_file, "%d,%d,%f,%d,%d\n",
+                test, num_threads, ((double)(end - start)) / CLOCKS_PER_SEC, count, verified_count);
 
         free(array);
     }
@@ -108,11 +107,21 @@ void run_tests_mutex(int threads) {
 }
 
 int main() {
+    FILE *csv_file = fopen("results_mutex.csv", "w");
+    if (csv_file == NULL) {
+        fprintf(stderr, "Error opening CSV file for writing.\n");
+        return 1;
+    }
+
+    fprintf(csv_file, "Test,Threads,Time,Count,Verified\n");
+
     // Run tests with different number of threads
     for (num_threads = 1; num_threads <= 32; num_threads *= 2) {
         printf("\nRunning tests with %d threads:\n", num_threads);
-        run_tests_mutex(num_threads);
+        run_tests_mutex(num_threads, csv_file);
     }
+
+    fclose(csv_file);
 
     return 0;
 }
