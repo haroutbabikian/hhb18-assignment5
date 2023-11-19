@@ -72,6 +72,37 @@ The program was executed with varying numbers of threads:
 
 ![Plot_1_1000000000](runtime_plot(1billion).png)
 
+## Testing
+
+In order to run a test (100 runs), the user must specify the test flag, --test, with the desired number of threads.
+Example: `./count_race --test 32` in order to test for 32 threads.
+
+Performing the tests on an array size of 1000 is enough to show the unreliablility of using threads with a share count.
+
+| Array Size | Correctness rate (1 thread)           |
+| ------- | ------------------------- |
+| 1000       | 100% |
+
+| Array Size | Correctness rate (2 threads)           |
+| ------- | ------------------------- |
+| 1000       | 99% |
+
+| Array Size | Correctness rate (4 threads)           |
+| ------- | ------------------------- |
+| 1000       | 76% |
+
+| Array Size | Correctness rate (8 threads)           |
+| ------- | ------------------------- |
+| 1000       | 74% |
+
+| Array Size | Correctness rate (16 threads)           |
+| ------- | ------------------------- |
+| 1000       | 58% |
+
+| Array Size | Correctness rate (32 threads)           |
+| ------- | ------------------------- |
+| 1000       | 64% |
+
 ## Discussion
 
 Increasing the number of threads did not always make the program faster due to a few reasons (I have taken Operating Systems):
